@@ -1,4 +1,32 @@
 {
-  "generatedAt": "2026-08-02T16:34:03.182Z",
-  "plugins": []
+  "generatedAt": "2026-08-02T16:37:26.976Z",
+  "plugins": [
+    {
+      "id": "marcel-pet",
+      "name": "蕾米埃尔小桌宠",
+      "version": "1.0.0",
+      "publisher": "https://github.com/q541810",
+      "minAppVersion": "0.7.1",
+      "description": "蕾米埃尔桌面悬浮桌宠，实时反映 Agent 运行状态（thinking / 输出 / tool / plan）",
+      "capabilities": [
+        "window.create",
+        "window.transparent",
+        "window.always_on_top",
+        "window.skip_taskbar",
+        "context_menu",
+        "events",
+        "fs.read",
+        "fs.write",
+        "notification",
+        "ui.inject"
+      ],
+      "category": "pet",
+      "icon": {
+        "kind": "emoji",
+        "value": "🐾"
+      },
+      "repoUrl": "https://github.com/q541810/RemielleDan_Pet_Plugin",
+      "updatedAt": "2026-08-02"
+    }
+  ]
 }

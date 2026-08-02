@@ -2,6 +2,9 @@
   {
     "repo": "q541810/RemielleDan_Pet_Plugin",
     "category": "pet",
-    "icon": { "kind": "emoji", "value": "🐾" }
+    "icon": {
+      "kind": "emoji",
+      "value": "🐾"
+    }
   }
 ]
