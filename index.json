@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-02T16:39:48.120Z",
+  "generatedAt": "2026-08-02T17:49:30.376Z",
   "plugins": [
     {
       "id": "marcel-pet",
@@ -22,8 +22,8 @@
       ],
       "category": "pet",
       "icon": {
-        "kind": "emoji",
-        "value": "🐾"
+        "kind": "img",
+        "value": "https://picui.ogmua.cn/s1/2026/08/03/6a6f8241b3423.webp"
       },
       "repoUrl": "https://github.com/q541810/RemielleDan_Pet_Plugin",
       "updatedAt": "2026-08-02"

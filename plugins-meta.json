@@ -3,8 +3,8 @@
     "repo": "q541810/RemielleDan_Pet_Plugin",
     "category": "pet",
     "icon": {
-      "kind": "emoji",
-      "value": "🐾"
+      "kind": "img",
+      "value": "https://picui.ogmua.cn/s1/2026/08/03/6a6f8241b3423.webp"
     }
   }
 ]
