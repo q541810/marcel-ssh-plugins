@@ -159,3 +159,14 @@ jobs:
             await github.rest.issues.update({
               owner: repo.owner, repo: repo.repo, issue_number: issue.number, state: 'closed',
             });
+
+            // 刷新 jsDelivr 镜像缓存（index.json 变化后客户端镜像源能立即拿到新数据；
+            // 刷新失败不影响上架，jsDelivr 最长 12h 也会自动过期）
+            try {
+              await fetch(
+                `https://purge.jsdelivr.net/gh/${repo.owner}/${repo.repo}@main/index.json`,
+                { method: 'POST' }
+              );
+            } catch (e) {
+              console.warn('jsDelivr purge failed:', e.message);
+            }
