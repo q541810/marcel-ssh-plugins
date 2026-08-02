@@ -1,0 +1,156 @@
+name: Submit Plugin
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    concurrency: submit-plugin
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+
+            const issue = context.payload.issue;
+            const body = issue.body || '';
+            const repo = context.repo;
+
+            const comment = (msg) =>
+              github.rest.issues.createComment({
+                owner: repo.owner, repo: repo.repo, issue_number: issue.number, body: msg,
+              });
+
+            const addLabel = (label) =>
+              github.rest.issues.addLabels({
+                owner: repo.owner, repo: repo.repo, issue_number: issue.number, labels: [label],
+              });
+
+            // 校验失败：评论原因 + 标记 + 让 job 失败（红 = 未通过，绿 = 上架成功）
+            const reject = async (label, msg) => {
+              await addLabel(label);
+              await comment('❌ 上架校验未通过：\n\n' + msg);
+              process.exit(1);
+            };
+
+            // ── 解析 Issue body（按模板的 ### 标题提取）──
+            const field = (label) => {
+              const re = new RegExp(`###\\s*${label}\\s*\\n([\\s\\S]*?)(?=\\n###|\\n---|$)`, 'i');
+              const m = body.match(re);
+              return m ? m[1].trim() : '';
+            };
+
+            // ── 校验 ──
+            const errors = [];
+
+            const pluginId = field('插件 ID');
+            if (!/^[a-z0-9][a-z0-9_-]*$/.test(pluginId)) {
+              errors.push('插件 ID 缺失或格式非法（只能是小写字母/数字/连字符/下划线，如 long-term-memory）');
+            }
+
+            const repoField = field('插件仓库');
+            if (!/^[\w.-]+\/[\w.-]+$/.test(repoField)) {
+              errors.push('插件仓库格式应为 owner/repo（如 q541810/long-term-memory）');
+            } else {
+              try {
+                await github.rest.repos.get({ owner: repoField.split('/')[0], repo: repoField.split('/')[1] });
+              } catch (e) {
+                errors.push(`仓库 ${repoField} 不存在或不可访问（需要公开仓库）`);
+              }
+            }
+
+            const checks = [...body.matchAll(/- \[([ xX])\]/g)].map((m) => m[1]);
+            if (checks.length === 0) {
+              errors.push('确认事项未填写（模板底部的 checkbox 需要勾选）');
+            } else if (checks.some((c) => c !== 'x' && c !== 'X')) {
+              errors.push('确认事项未全部勾选（所有 checkbox 都必须是 [x]）');
+            }
+
+            const category = field('分类') || 'other';
+            if (category.length > 32) errors.push('分类过长（≤32 字符）');
+
+            const iconRaw = field('图标');
+            let icon = null;
+            if (iconRaw) {
+              if (/^https?:\/\/.+/.test(iconRaw)) {
+                icon = { kind: 'img', value: iconRaw };
+              } else if (iconRaw.length <= 8) {
+                icon = { kind: 'emoji', value: iconRaw };
+              } else {
+                errors.push('图标只能是 emoji 或 https 图片 URL');
+              }
+            }
+
+            if (errors.length > 0) {
+              await reject('invalid', errors.map((e) => `- ${e}`).join('\n') +
+                '\n\n请修改 Issue 内容（编辑即可触发重新校验）或重新提交。');
+            }
+
+            // ── 拉取插件 plugin.json 并校验内容 ──
+            const rawUrl = `https://raw.githubusercontent.com/${repoField}/HEAD/plugin.json`;
+            let manifest;
+            try {
+              const resp = await fetch(rawUrl);
+              if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+              manifest = await resp.json();
+            } catch (e) {
+              await reject('invalid', `- 拉取 ${repoField} 的 plugin.json 失败（${e.message}）\n\n请确认 plugin.json 位于仓库根目录。`);
+            }
+
+            if (manifest.id !== pluginId) {
+              await reject('invalid', `- plugin.json 里的 id（${manifest.id}）与 Issue 填写的插件 ID（${pluginId}）不一致`);
+            }
+            if (typeof manifest.version !== 'string' || !/^\d+\.\d+\.\d+$/.test(manifest.version)) {
+              await reject('invalid', '- plugin.json 的 version 缺失或不是 x.y.z 格式');
+            }
+
+            // ── 更新 plugins-meta.json ──
+            const metaPath = 'plugins-meta.json';
+            let meta = [];
+            try { meta = JSON.parse(fs.readFileSync(metaPath, 'utf8')); } catch (e) { meta = []; }
+            const existing = meta.findIndex((e) => e.repo === repoField);
+            const newEntry = { repo: repoField, category, ...(icon ? { icon } : {}) };
+            if (existing >= 0) {
+              meta[existing] = { ...meta[existing], category, ...(icon ? { icon } : {}) };
+            } else {
+              meta.push(newEntry);
+            }
+            fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2) + '\n');
+
+            // ── 全量重新生成 index.json ──
+            const { execSync } = require('child_process');
+            execSync('node scripts/build-index.mjs', { stdio: 'inherit' });
+            const index = JSON.parse(fs.readFileSync('index.json', 'utf8'));
+            const entry = index.plugins.find((p) => p.id === pluginId);
+            if (!entry) {
+              await reject('invalid', '- 索引生成后未找到该插件条目（生成脚本有误或插件信息不完整）');
+            }
+
+            // ── 提交并推送 ──
+            execSync('git config user.name "marcel-ssh-plugins[bot]"');
+            execSync('git config user.email "41898282+github-actions[bot]@users.noreply.github.com"');
+            execSync('git add plugins-meta.json index.json');
+            const isUpdate = existing >= 0;
+            execSync(`git commit -m "${isUpdate ? 'update' : 'add'} plugin: ${pluginId} (v${entry.version})"`);
+            execSync('git push');
+
+            await addLabel('submitted');
+            await comment(
+              `✅ 上架成功！\n\n` +
+              `- 插件：**${entry.name}**（${entry.id}）v${entry.version}\n` +
+              `- 分类：${entry.category}\n` +
+              `- 仓库：${entry.repoUrl}\n` +
+              `- 最低兼容应用版本：${entry.minAppVersion ?? '不限'}\n` +
+              `${isUpdate ? '\n> 这是对已有插件的更新，索引已刷新。' : ''}\n` +
+              `\n市场客户端拉取 [index.json](https://raw.githubusercontent.com/${repo.owner}/${repo.repo}/HEAD/index.json) 即可看到。`
+            );
