@@ -45,7 +45,7 @@ jobs:
 
             // ── 解析 Issue body（按模板的 ### 标题提取）──
             const field = (label) => {
-              const re = new RegExp(`###\\s*${label}\\s*\\n([\\s\\S]*?)(?=\\n###|\\n---|$)`, 'i');
+              const re = new RegExp(`###\\s*${label}\\s*\\n([\\s\\S]*?)(?=\\n#{1,6}\\s|\\n---|$)`, 'i');
               const m = body.match(re);
               return m ? m[1].trim() : '';
             };
