@@ -1,10 +1,7 @@
 [
   {
-    "repo": "q541810/long-term-memory",
-    "category": "memory",
-    "icon": {
-      "kind": "emoji",
-      "value": "🧠"
-    }
+    "repo": "q541810/RemielleDan_Pet_Plugin",
+    "category": "pet",
+    "icon": { "kind": "emoji", "value": "🐾" }
   }
 ]
