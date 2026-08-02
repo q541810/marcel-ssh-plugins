@@ -1,4 +1,6 @@
 ---
+name: 插件上架
+about: 提交插件到 Marcel SSH 插件市场（机器人自动校验并评论结果）
 title: "插件上架：<插件名>"
 labels: submit
 ---
