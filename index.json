@@ -1,0 +1,26 @@
+{
+  "generatedAt": "2026-08-02T16:31:06.680Z",
+  "plugins": [
+    {
+      "id": "long-term-memory",
+      "name": "长期记忆",
+      "version": "1.0.3",
+      "publisher": "棍母",
+      "minAppVersion": "0.6.0",
+      "description": "让 Agent 选择性地把关键信息记到小本本上，按连接隔离",
+      "capabilities": [
+        "ssh.list",
+        "fs.read",
+        "fs.write",
+        "events"
+      ],
+      "category": "memory",
+      "icon": {
+        "kind": "emoji",
+        "value": "🧠"
+      },
+      "repoUrl": "https://github.com/q541810/long-term-memory",
+      "updatedAt": "2026-08-02"
+    }
+  ]
+}

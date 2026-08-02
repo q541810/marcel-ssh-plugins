@@ -2,6 +2,9 @@
   {
     "repo": "q541810/long-term-memory",
     "category": "memory",
-    "icon": { "kind": "emoji", "value": "🧠" }
+    "icon": {
+      "kind": "emoji",
+      "value": "🧠"
+    }
   }
 ]
