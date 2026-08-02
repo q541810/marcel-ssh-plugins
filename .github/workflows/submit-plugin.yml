@@ -154,3 +154,8 @@ jobs:
               `${isUpdate ? '\n> 这是对已有插件的更新，索引已刷新。' : ''}\n` +
               `\n市场客户端拉取 [index.json](https://raw.githubusercontent.com/${repo.owner}/${repo.repo}/HEAD/index.json) 即可看到。`
             );
+
+            // 上架成功，关闭 Issue
+            await github.rest.issues.update({
+              owner: repo.owner, repo: repo.repo, issue_number: issue.number, state: 'closed',
+            });
