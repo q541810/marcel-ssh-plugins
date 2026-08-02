@@ -1,13 +1,34 @@
 {
-  "generatedAt": "2026-08-02T17:49:30.376Z",
+  "generatedAt": "2026-08-02T18:25:53.252Z",
   "plugins": [
+    {
+      "id": "long-term-memory",
+      "name": "长期记忆",
+      "version": "1.0.3",
+      "publisher": "https://github.com/q541810",
+      "minAppVersion": "0.6.0",
+      "description": "让 Agent 选择性地把关键信息记到小本本上，按连接隔离(超劣质，能用就行)",
+      "capabilities": [
+        "ssh.list",
+        "fs.read",
+        "fs.write",
+        "events"
+      ],
+      "category": "memory",
+      "icon": {
+        "kind": "emoji",
+        "value": "🧠"
+      },
+      "repoUrl": "https://github.com/q541810/long-term-memory",
+      "updatedAt": "2026-08-02"
+    },
     {
       "id": "marcel-pet",
       "name": "蕾米埃尔小桌宠",
       "version": "1.0.0",
       "publisher": "https://github.com/q541810",
       "minAppVersion": "0.7.1",
-      "description": "蕾米埃尔桌面悬浮桌宠，实时反映 Agent 运行状态（thinking / 输出 / tool / plan）",
+      "description": "蕾米埃尔桌面悬浮桌宠，实时反映 Agent 运行状态（thinking / 输出 / tool / plan）。如果你苦于插件的配置界面做的很烂，可以看看这个插件",
       "capabilities": [
         "window.create",
         "window.transparent",

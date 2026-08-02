@@ -6,5 +6,13 @@
       "kind": "img",
       "value": "https://picui.ogmua.cn/s1/2026/08/03/6a6f8241b3423.webp"
     }
+  },
+  {
+    "repo": "q541810/long-term-memory",
+    "category": "memory",
+    "icon": {
+      "kind": "emoji",
+      "value": "🧠"
+    }
   }
 ]
