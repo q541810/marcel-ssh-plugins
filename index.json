@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-02T18:25:53.252Z",
+  "generatedAt": "2026-08-03T06:31:51.836Z",
   "plugins": [
     {
       "id": "long-term-memory",
@@ -20,15 +20,15 @@
         "value": "🧠"
       },
       "repoUrl": "https://github.com/q541810/long-term-memory",
-      "updatedAt": "2026-08-02"
+      "updatedAt": "2026-08-03"
     },
     {
       "id": "marcel-pet",
       "name": "蕾米埃尔小桌宠",
       "version": "1.0.0",
       "publisher": "https://github.com/q541810",
-      "minAppVersion": "0.7.1",
-      "description": "蕾米埃尔桌面悬浮桌宠，实时反映 Agent 运行状态（thinking / 输出 / tool / plan）。如果你苦于插件的配置界面做的很烂，可以看看这个插件",
+      "minAppVersion": "0.8.0",
+      "description": "蕾米埃尔桌面悬浮桌宠，实时反映 Agent 运行状态（thinking / 输出 / tool / plan）",
       "capabilities": [
         "window.create",
         "window.transparent",
@@ -47,7 +47,7 @@
         "value": "https://picui.ogmua.cn/s1/2026/08/03/6a6f8241b3423.webp"
       },
       "repoUrl": "https://github.com/q541810/RemielleDan_Pet_Plugin",
-      "updatedAt": "2026-08-02"
+      "updatedAt": "2026-08-03"
     }
   ]
 }
